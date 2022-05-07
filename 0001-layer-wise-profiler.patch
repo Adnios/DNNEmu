@@ -1,0 +1,65 @@
+From a8ed01ecd96f149303bf5358b410e0c486a32f70 Mon Sep 17 00:00:00 2001
+From: Adnios <2780199647@qq.com>
+Date: Sat, 7 May 2022 08:12:58 +0800
+Subject: [PATCH] layer-wise profiler
+
+---
+ src/executor/graph_executor.cc    | 3 ++-
+ src/imperative/imperative.cc      | 2 +-
+ src/imperative/imperative_utils.h | 6 ++++--
+ 3 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/src/executor/graph_executor.cc b/src/executor/graph_executor.cc
+index d866ad135..96b971424 100644
+--- a/src/executor/graph_executor.cc
++++ b/src/executor/graph_executor.cc
+@@ -1085,7 +1085,8 @@ void GraphExecutor::InitCachedOps() {
+   for (uint32_t nid = 0; nid < idx.num_nodes(); ++nid) {
+     const auto& inode = idx[nid];
+     if (inode.source->is_variable()) continue;
+-    op_nodes_[nid].opr_name = inode.source->op()->name.c_str();
++    // op_nodes_[nid].opr_name = inode.source->op()->name.c_str();
++    op_nodes_[nid].opr_name = inode.source->attrs.c_str();
+     if (skip_plus_node.at(nid)) {
+       op_nodes_[nid].skip_exec_node = true; continue;
+     }
+diff --git a/src/imperative/imperative.cc b/src/imperative/imperative.cc
+index a381b2384..8f2833570 100644
+--- a/src/imperative/imperative.cc
++++ b/src/imperative/imperative.cc
+@@ -216,7 +216,7 @@ void Imperative::RecordOp(
+ 
+   nnvm::NodePtr node = nnvm::Node::Create();
+   node->attrs = std::move(attrs);
+-  node->attrs.name = "node_" + std::to_string(node_count_++);
++  // node->attrs.name = "node_" + std::to_string(node_count_++);
+   AGInfo& info = AGInfo::Create(node);
+   info.state = state;
+   info.ctx = outputs[0]->ctx();
+diff --git a/src/imperative/imperative_utils.h b/src/imperative/imperative_utils.h
+index 4b0d13167..f9adda00a 100644
+--- a/src/imperative/imperative_utils.h
++++ b/src/imperative/imperative_utils.h
+@@ -410,7 +410,8 @@ inline void PushFCompute(const FCompute& fn,
+         rctx.get_stream<gpu>()->Wait();
+       }
+     }, ctx, read_vars, write_vars, FnProperty::kNormal,
+-    0, op->name.c_str());
++    // 0, op->name.c_str());
++    0, attrs.name != "" ? attrs.name.c_str() : op->name.c_str());
+ }
+ 
+ inline void PushFComputeEx(const FComputeEx& fn,
+@@ -446,7 +447,8 @@ inline void PushFComputeEx(const FComputeEx& fn,
+   } else {
+     CHECK(exec_type == ExecType::kSync);
+     Engine::Get()->PushSync(run, ctx, read_vars, write_vars, FnProperty::kNormal,
+-                            0, op->name.c_str());
++                            // 0, op->name.c_str());
++                            0, attrs.name != "" ? attrs.name.c_str() : op->name.c_str());
+   }
+ }
+ 
+-- 
+2.35.1
+
