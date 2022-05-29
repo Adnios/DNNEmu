@@ -4,7 +4,7 @@ This repository is the implementation of our layer-wise profiler. Other code abo
 
 ## Running
 
-Our layer-wise profiler is based on [MXNet 1.4.1](https://github.com/apache/incubator-mxnet.git). You should download MXNet source code and apply the patch in this repository to the MXNet source code.
+Our layer-wise profiler is based on [MXNet 1.4.1](https://github.com/apache/incubator-mxnet.git). You should download MXNet source code and apply the patch(0001-layer-wise-profiler.patch) in this repository to the MXNet source code.
 
 1. Download the MXNet source.
     ```bash
