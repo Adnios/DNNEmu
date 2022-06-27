@@ -27,6 +27,7 @@ As illustrated in Algorithm 1, our layer-wise profiler uses the operator name (o
 ## Usage
 
 ![profiler](pic/profiler.png)
+![profiler2](pic/profiler2.png)
 
 Our layer-wise profiler requires no changes to the users' code. You should enable profiler follow the [Profiling Guide](https://mxnet.apache.org/versions/1.9.0/api/python/docs/tutorials/performance/backend/profiler.html)
 
